@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "542472186251",
+    "project_id": "final-project-34f30",
+    "storage_bucket": "final-project-34f30.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:542472186251:android:be9942e2ebe27407f6e78e",
+        "android_client_info": {
+          "package_name": "com.ribratech.oradayim"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2pvdWq7y0FG27Gf_9ByPqk0m81R5INN0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
