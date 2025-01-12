@@ -1,19 +1,20 @@
-/*
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:oradayim/core/init/auth/auth_wrapper.dart';
+import 'package:oradayim/screens/auth/views/login/login_view.dart';
+import 'package:oradayim/screens/auth/views/register/register_view.dart';
 
-import '../screens/login/login_screen.dart';
-import '../screens/register/register_screen.dart';
+import 'dart:io' show Platform;
+
+import '../screens/home/home_screen.dart';
 
 class NavigationUtils {
   static final navigatorKey = GlobalKey<NavigatorState>();
 
   static const String loginScreen = "loginScreen";
   static const String registerScreen = "registerScreen";
-  static const String authScreen = "authScreen";
   static const String homeScreen = "homeScreen";
+  static const String authScreen = "authScreen";
 
   static _navigateToPage(context, String pageName, {Object? arguments}) =>
       Navigator.pushNamed(context, pageName, arguments: arguments);
@@ -27,11 +28,10 @@ class NavigationUtils {
   static navigateToBack(context, {dynamic value}) =>
       Navigator.pop(context, value);
 
+  static navigateToLoginScreen(context) => _navigateToAndRemoveUntil(context, loginScreen);
+
   static navigateToHomeScreen(context) =>
       _navigateToAndRemoveUntil(context, homeScreen);
-
-  static navigateToLoginScreen(context) =>
-      _navigateToAndRemoveUntil(context, loginScreen);
 
   static navigateToRegisterScreen(context) =>
       _navigateToAndRemoveUntil(context, registerScreen);
@@ -59,15 +59,15 @@ class NavigationUtils {
   }
 
   static _buildNavigationMap(context, settings) {
-    Widget page = const AuthGateScreen();
+    Widget page = const AuthWrapper();
 
     switch (settings.name) {
       case loginScreen:
-        page = const LoginScreen();
+        page = const LoginView();
         break;
       case registerScreen:
-        page = const RegisterScreen();
-        break;
+        page = const RegisterView();
+        break;  
       case homeScreen:
         page = const HomeScreen();
         break;
@@ -75,5 +75,3 @@ class NavigationUtils {
     return page;
   }
 }
-
-*/

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:oradayim/utils/navigation_util.dart';
 import 'firebase_options.dart';
-import 'screens/auth/views/login/login_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: NavigationUtils.navigatorKey,
       title: 'Oradayim',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -25,7 +26,8 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const LoginView(),
+      initialRoute: NavigationUtils.authScreen,
+      onGenerateRoute: NavigationUtils.onGenerateRoute,
     );
   }
 }

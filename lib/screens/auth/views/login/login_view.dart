@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:oradayim/utils/navigation_util.dart';
 import '../../../../core/base/views/base_view.dart';
-import '../../../home/home_screen.dart';
 import '../register/register_view.dart';
 import '../../viewmodels/login/login_view_model.dart';
 
@@ -28,6 +28,8 @@ class LoginView extends StatelessWidget {
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.emailAddress,
+                onEditingComplete: () => FocusScope.of(context).nextFocus(),
+                textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -37,35 +39,43 @@ class LoginView extends StatelessWidget {
                   border: OutlineInputBorder(),
                 ),
                 obscureText: true,
+                onEditingComplete: () async {
+                  // Klavyeyi kapat
+                  FocusScope.of(context).unfocus();
+                  // Giriş yap
+                  await viewModel.login(context);
+                },
+                textInputAction: TextInputAction.done,
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () async {
-                  if (await viewModel.login()) {
-                    if (context.mounted) {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
-                        ),
-                      );
-                    }
-                  }
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text('Giriş Yap'),
+                onPressed: viewModel.isLoading 
+                  ? null 
+                  : () async {
+                      // Klavyeyi kapat
+                      FocusScope.of(context).unfocus();
+                      await viewModel.login(context);
+                    },
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: viewModel.isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text('Giriş Yap'),
                 ),
               ),
               const SizedBox(height: 16),
               TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisterView(),
-                    ),
-                  );
-                },
+                onPressed: viewModel.isLoading
+                    ? null
+                    : () {
+                        NavigationUtils.navigateToRegisterScreen(context);
+                      },
                 child: const Text('Hesabın yok mu? Kayıt ol'),
               ),
             ],

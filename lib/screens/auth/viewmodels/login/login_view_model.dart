@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:oradayim/utils/navigation_util.dart';
 import '../../../../core/base/viewmodels/base_view_model.dart';
 import '../../services/auth_service.dart';
 
@@ -8,34 +9,69 @@ class LoginViewModel extends BaseViewModel {
   
   final AuthService _authService = AuthService();
 
-  Future<bool> login() async {
-    if (!_validateInputs()) return false;
+  Future<bool> login(BuildContext context) async {
+    if (!_validateInputs(context)) return false;
 
     try {
       isLoading = true;
       
-      final result = await _authService.login(
-        email: emailController.text,
+      final (success, message) = await _authService.login(
+        email: emailController.text.trim(),
         password: passwordController.text,
       );
 
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: success ? Colors.green : Colors.red,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+
+      // Başarılı girişten sonra form temizle
+      if (success) {
+        emailController.clear();
+        passwordController.clear();
+        NavigationUtils.navigateToHomeScreen(context);
+      }
+      
       isLoading = false;
-      return result.$1;
+      return success;
     } catch (e) {
       isLoading = false;
-      debugPrint('Giriş hatası: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Beklenmeyen bir hata oluştu: $e'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+      debugPrint('Login error: $e');
       return false;
     }
   }
 
-  bool _validateInputs() {
-    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
-      debugPrint('Tüm alanları doldurun');
-      return false;
+  bool _validateInputs(BuildContext context) {
+    String? errorMessage;
+
+    if (emailController.text.trim().isEmpty || passwordController.text.isEmpty) {
+      errorMessage = 'Tüm alanları doldurun';
+    } else if (!emailController.text.contains('@')) {
+      errorMessage = 'Geçerli bir e-posta adresi girin';
     }
 
-    if (!emailController.text.contains('@')) {
-      debugPrint('Geçerli bir e-posta adresi girin');
+    if (errorMessage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 2),
+        ),
+      );
       return false;
     }
 

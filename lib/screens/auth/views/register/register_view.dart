@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:oradayim/utils/navigation_util.dart';
 import '../../../../core/base/views/base_view.dart';
 import '../login/login_view.dart';
 import '../../viewmodels/register/register_view_model.dart';
@@ -69,11 +70,7 @@ class RegisterView extends StatelessWidget {
                     if (await viewModel.register(context)) {
                       Future.delayed(const Duration(seconds: 2), () {
                         if (context.mounted) {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => const LoginView(),
-                            ),
-                          );
+                          NavigationUtils.navigateToLoginScreen(context);
                         }
                       });
                     }
