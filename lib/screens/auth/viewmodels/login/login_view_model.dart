@@ -6,7 +6,7 @@ import '../../services/auth_service.dart';
 class LoginViewModel extends BaseViewModel {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  
+
   final AuthService _authService = AuthService();
 
   Future<bool> login(BuildContext context) async {
@@ -14,8 +14,8 @@ class LoginViewModel extends BaseViewModel {
 
     try {
       isLoading = true;
-      
-      final (success, message) = await _authService.login(
+
+      final response = await _authService.login(
         email: emailController.text.trim(),
         password: passwordController.text,
       );
@@ -23,22 +23,23 @@ class LoginViewModel extends BaseViewModel {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(message),
-            backgroundColor: success ? Colors.green : Colors.red,
+            content: Text(response.message ?? "null"),
+            backgroundColor: response.isSuccess ? Colors.green : Colors.red,
             duration: const Duration(seconds: 2),
           ),
         );
       }
 
       // Başarılı girişten sonra form temizle
-      if (success) {
+      if (response.isSuccess) {
         emailController.clear();
         passwordController.clear();
+
         NavigationUtils.navigateToHomeScreen(context);
       }
-      
+
       isLoading = false;
-      return success;
+      return response.isSuccess;
     } catch (e) {
       isLoading = false;
       if (context.mounted) {
@@ -58,7 +59,8 @@ class LoginViewModel extends BaseViewModel {
   bool _validateInputs(BuildContext context) {
     String? errorMessage;
 
-    if (emailController.text.trim().isEmpty || passwordController.text.isEmpty) {
+    if (emailController.text.trim().isEmpty ||
+        passwordController.text.isEmpty) {
       errorMessage = 'Tüm alanları doldurun';
     } else if (!emailController.text.contains('@')) {
       errorMessage = 'Geçerli bir e-posta adresi girin';
@@ -89,4 +91,4 @@ class LoginViewModel extends BaseViewModel {
   Future<void> init() async {
     // Login sayfası için initial işlemler
   }
-} 
+}

@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesUtil {
   static final SharedPreferencesUtil _singleton =
-  SharedPreferencesUtil._internal();
+      SharedPreferencesUtil._internal();
 
   static SharedPreferences? _prefs;
 
@@ -12,20 +12,11 @@ class SharedPreferencesUtil {
   static const String eMail = 'email';
   static const String fullName = 'fullName';
   static const String userId = 'userId';
-  static const String gender = 'gender';
-  static const String telNumber = 'telNumber';
-  static const String isAdmin = 'isAdmin';
   static const String imgUrl = 'imgUrl';
   static const String locale = 'locale';
   static const String rememberMe = 'rememberMe';
-  static const String adminId = 'adminId';
-  static const String selectedHairdresserId = 'selectedHairdresserId';
-  static const String selectedWorkerId = 'selectedWorkerId';
-  static const String selectedWorkerName = 'selectedWorkerName';
-  static const String selectedWorkerImg = 'selectedWorkerImg';
   static const String lastLogged = 'lastLogged';
   static const String userDeviceToken = 'userDeviceToken';
-  static const String unreadNotificationsCount = 'unreadNotificationsCount';
   static const String themeMode = 'themeMode';
   SharedPreferencesUtil._internal() {
     _init();
@@ -57,15 +48,6 @@ class SharedPreferencesUtil {
   setFullName(String value) => _prefs!.setString(fullName, value);
   String? getFullName() => _prefs!.getString(fullName);
 
-  setTelNumber(String value) => _prefs!.setString(telNumber, value);
-  String? getTelNumber() => _prefs!.getString(telNumber);
-
-  setIsAdmin(bool value) => _prefs!.setBool(isAdmin, value);
-  bool? getIsAdmin() => _prefs!.getBool(isAdmin);
-
-  setGender(String value) => _prefs!.setString(gender, value);
-  String? getGender() => _prefs!.getString(gender);
-
   setImage(String value) => _prefs!.setString(imgUrl, value);
   String? getImage() => _prefs!.getString(imgUrl);
 
@@ -76,24 +58,8 @@ class SharedPreferencesUtil {
 
   String? getLocale() => _prefs!.getString(locale);
 
-  setUserId(String value) => _prefs!.setString(adminId, value);
-  String? getUserId() => _prefs!.getString(adminId);
-
   setLastLogged(String value) => _prefs!.setString(lastLogged, value);
   String? getLastLogged() => _prefs!.getString(lastLogged);
-
-  setUnreadNotificationsCount(int value) =>
-      _prefs!.setInt(unreadNotificationsCount, value);
-  int? getUnreadNotificationsCount() =>
-      _prefs!.getInt(unreadNotificationsCount);
-
-  setSelectedWorkerName(String value) =>
-      _prefs!.setString(selectedWorkerName, value);
-  String? getSelectedWorkerName() => _prefs!.getString(selectedWorkerName);
-
-  setSelectedWorkerImg(String value) =>
-      _prefs!.setString(selectedWorkerImg, value);
-  String? getSelectedWorkerImg() => _prefs!.getString(selectedWorkerImg);
 
   clear() {
     _prefs!.clear();
@@ -107,14 +73,6 @@ class SharedPreferencesUtil {
     return getBool(rememberMe);
   }
 
-  setSelectedWorkerId(String value) {
-    setString(selectedWorkerId, value);
-  }
-
-  String? getSelectedWorkerId() {
-    return getString(selectedWorkerId);
-  }
-
   setUserDeviceToken(String value) {
     setString(userDeviceToken, value);
   }
@@ -123,19 +81,11 @@ class SharedPreferencesUtil {
     return getString(userDeviceToken);
   }
 
-  setSelectedHairdresserId(String value) {
-    setString(selectedHairdresserId, value);
-  }
-
   setThemeModeValue(String value) {
     setString(themeMode, value);
   }
 
   String? get getThemeMode => getString(themeMode);
-
-  String? getSelectedHairdresserId() {
-    return getString(selectedHairdresserId);
-  }
 
   Future<void> clearAllExceptRememberMe() async {
     final rememberMeValue = getRememberValue();
