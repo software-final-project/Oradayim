@@ -1,14 +1,17 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:oradayim/core/base/init/application_initialize.dart';
+import 'package:oradayim/core/base/init/lang/language_manager.dart';
 import 'package:oradayim/utils/navigation_util.dart';
-import 'firebase_options.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const MyApp());
+  await ApplicationInitialize().make();
+
+  runApp(EasyLocalization(
+      supportedLocales: LanguageManager.instance.supportedLocales,
+      path: LanguageManager.instance.path,
+      startLocale: LanguageManager.instance.getStartLocale(),
+      child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -28,6 +31,9 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: NavigationUtils.authScreen,
       onGenerateRoute: NavigationUtils.onGenerateRoute,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
+      localizationsDelegates: context.localizationDelegates,
     );
   }
 }

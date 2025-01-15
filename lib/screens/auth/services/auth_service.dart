@@ -1,5 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:oradayim/core/base/init/locale/sharred_preferences_locale.dart';
+import 'package:oradayim/core/base/services/firebase_service.dart';
+import 'package:oradayim/models/user_model.dart';
+
+import '../../../core/base/services/base_service.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -51,16 +56,37 @@ class AuthService {
     }
   }
 
-  Future<(bool, String)> login({
+  Future<BaseService> login({
     required String email,
     required String password,
   }) async {
+    late BaseService service;
     try {
-      await _auth.signInWithEmailAndPassword(
+      await _auth
+          .signInWithEmailAndPassword(
         email: email,
         password: password,
+      )
+          .then(
+        (value) async {
+          var loggedUserCollection = await FirebaseService.firebaseCloudStore
+              .collection(FirebaseCollection.users.name)
+              .doc(value.user?.uid)
+              .get();
+          if (loggedUserCollection.data() != null) {
+            UserModel user = UserModel.fromMap(loggedUserCollection.data()!);
+            SharedPreferencesUtil().setEmail(user.userEmail);
+            SharedPreferencesUtil().setFullName(user.userFullName);
+            SharedPreferencesUtil().setImage(user.userImageUrl);
+            service = BaseService(
+                isSuccess: true, message: "Giriş Başarılı", data: user);
+          }
+          {
+            return service = BaseService(
+                isSuccess: false, message: "Hata meydana geldi", data: null);
+          }
+        },
       );
-      return (true, 'Giriş başarılı');
     } on FirebaseAuthException catch (e) {
       String message;
       switch (e.code) {
@@ -79,10 +105,12 @@ class AuthService {
         default:
           message = 'Bir hata oluştu: ${e.message}';
       }
-      return (false, message);
+      service = BaseService(isSuccess: false, message: message, data: null);
     } catch (e) {
-      return (false, 'Beklenmeyen bir hata oluştu: $e');
+      service =
+          BaseService(isSuccess: false, message: e.toString(), data: null);
     }
+    return service;
   }
 
   Future<void> logout() async {
@@ -92,4 +120,4 @@ class AuthService {
   User? get currentUser => _auth.currentUser;
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
-} 
+}

@@ -30,4 +30,5 @@ class LanguageManager {
   }
 
   List<Locale> get supportedLocales => [enLocale, trLocale];
+  String get path => "assets/translations";
 }
